@@ -48,8 +48,8 @@ var parcelsLayer = L.geoJSON(null, {
         }
     },
     onEachFeature:function(feature, layer) {
-        let popupstring = "<div><h5>"+ feature.properties.Name +"</h6>"+
-        "<p>"+ getZoneName(feature.properties.zoneid) +"</p>"
+        let popupstring = "<div><h3></h3>"+
+         "<p class='d-flex space-between my-2 mx-2'> Use: <b class='uppercase'>"+ getZoneName(feature.properties.zone) +"</b></p>"+
         "</div>";
 
         layer.bindPopup(popupstring);
@@ -58,7 +58,7 @@ var parcelsLayer = L.geoJSON(null, {
 
 
 function getZoneName(zone) {
-    return zone.startsWith(0) ? 'residential' : zone.startsWith(1) ? 'industrial' :zone.startsWith(2) ? 'educational'
+    return !zone ? '' : zone.startsWith(0) ? 'residential' : zone.startsWith(1) ? 'industrial' :zone.startsWith(2) ? 'educational'
     : zone.startsWith(3) ? 'recreational':  zone.startsWith(4) ? 'public purpose' :  zone.startsWith(5)  ? 'commercial' 
     : zone.startsWith(6) ? 'public utilities' :  zone.startsWith(7) ? 'transportation' :'others';
     
@@ -66,9 +66,9 @@ function getZoneName(zone) {
 
 function getColorByZone(feature) {
     let colors = ['#3d5941','#778868','#b5b991','#f6edbd','#edbb8a','#de8a5a','#ca562c'];
-    let zone= feature.properties.zone;
+    let zone= feature.properties ? feature.properties.zone : feature;
 
-    if ( zone == null) { return ''}
+    if (zone == "" || !zone) { return '#ddd'}
     let color =  zone.startsWith(0) ? colors[0] : zone.startsWith(1) ? colors[1] :zone.startsWith(2) ? colors[2]
     : zone.startsWith(3) ? colors[3] :  zone.startsWith(4) ? colors[4] :  zone.startsWith(5)  ? colors[5] 
     :  zone.startsWith(6) ? colors[6] :  zone.startsWith(7) ? colors[7] :'';
@@ -104,3 +104,29 @@ fetch('/data/')
     console.error(error);
 });
 
+
+// create a legend
+// Visual Legend
+var legendControl = new L.Control({position:"bottomright"});
+legendControl.onAdd = function(map) {
+    let div = L.DomUtil.create("div", "accordion bg-white");
+
+    div.innerHTML = '<button class="btn btn-block bg-light text-left" type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">'+
+    'Legend</button>';
+
+    div.innerHTML += '<div class="collapse" id="collapseOne">'
+    let values = ['02', '12', '22','34', '54', '69', '71', ''];
+    let labels = ['residential','Industrial', 'Educational','Recreational', 'Public Purpose', 'Commercial', 'Public Utilities', 'Transportation'];
+
+    values.forEach((value, index) => {
+        let color = getColorByZone(value);
+        let name = labels[index]
+        div.innerHTML += "<div class='legend_wrapper'><div class='legend-item' style='background-color:"+color+"'></div><span>"+name+"</span></div>";
+    });
+
+    div.innerHTML += '</div>';
+
+    return div;
+}
+
+legendControl.addTo(map);
