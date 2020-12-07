@@ -1,4 +1,5 @@
 from django.shortcuts import render
+from django.http import JsonResponse
 from django.contrib.auth.decorators import login_required
 from django.core.serializers import serialize
 
@@ -16,5 +17,5 @@ def data_view(request):
         'boundary':serialize('geojson', Boundary.objects.all()),
         'parcels':serialize('geojson', Parcels.objects.all())
     }
-    
+
     return JsonResponse(context)
