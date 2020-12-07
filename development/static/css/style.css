@@ -23,8 +23,8 @@ body{
 }
 
 .navbar-brand {
-    background-color:var(--cta-color);
-    color:var(--white) !important;
+    /* background-color:var(--white); */
+    color:var(--black) !important;
     text-align: center;
 }
 

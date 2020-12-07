@@ -48,7 +48,7 @@ var parcelsLayer = L.geoJSON(null, {
         }
     },
     onEachFeature:function(feature, layer) {
-        let popupstring = "<div><h3></h3>"+
+        let popupstring = "<div><h3 class='my-2'></h3>"+
          "<p class='d-flex space-between my-2 mx-2'> Use: <b class='uppercase'>"+ getZoneName(feature.properties.zone) +"</b></p>"+
         "</div>";
 
@@ -111,20 +111,21 @@ var legendControl = new L.Control({position:"bottomright"});
 legendControl.onAdd = function(map) {
     let div = L.DomUtil.create("div", "accordion bg-white");
 
-    div.innerHTML = '<button class="btn btn-block bg-light text-left" type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">'+
+    div.innerHTML += '<button class="btn btn-block bg-light text-left" type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">'+
     'Legend</button>';
 
-    div.innerHTML += '<div class="collapse" id="collapseOne">'
+   
     let values = ['02', '12', '22','34', '54', '69', '71', ''];
     let labels = ['residential','Industrial', 'Educational','Recreational', 'Public Purpose', 'Commercial', 'Public Utilities', 'Transportation'];
 
+    let legendItems = "";
     values.forEach((value, index) => {
         let color = getColorByZone(value);
         let name = labels[index]
-        div.innerHTML += "<div class='legend_wrapper'><div class='legend-item' style='background-color:"+color+"'></div><span>"+name+"</span></div>";
+        legendItems += "<div class='legend_wrapper'><div class='legend-item' style='background-color:"+color+"'></div><span>"+name+"</span></div>";
     });
 
-    div.innerHTML += '</div>';
+    div.innerHTML += '<div class="collapse" id="collapseOne">'+ legendItems +'</div>';
 
     return div;
 }
