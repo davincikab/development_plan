@@ -1,12 +1,5 @@
 var accessToken = 'pk.eyJ1IjoiZGF1ZGk5NyIsImEiOiJjanJtY3B1bjYwZ3F2NGFvOXZ1a29iMmp6In0.9ZdvuGInodgDk7cv-KlujA';
 
-var alertId;
-var allAlerts = [];
-var viewAllRecords = document.getElementById('all-records');
-var declineAlerts = document.querySelectorAll(".decline");
-var respondAlerts = document.querySelectorAll('.response');
-var alerts = document.querySelectorAll(".view");
-
 var map = L.map('map', {
     center: {lng: 36.5232, lat: 0.2927},
     zoom: 14.4
@@ -44,11 +37,12 @@ var parcelsLayer = L.geoJSON(null, {
         return {
             fillColor:getColorByZone(feature),
             color:'#ddd',
+            fillOpacity:0.7,
             weight:1
         }
     },
     onEachFeature:function(feature, layer) {
-        let popupstring = "<div><h3 class='my-2'></h3>"+
+        let popupstring = "<div class='py-2'><h3 class='my-2'></h3>"+
          "<p class='d-flex space-between my-2 mx-2'> Use: <b class='uppercase'>"+ getZoneName(feature.properties.zone) +"</b></p>"+
         "</div>";
 
@@ -65,7 +59,11 @@ function getZoneName(zone) {
 }
 
 function getColorByZone(feature) {
-    let colors = ['#3d5941','#778868','#b5b991','#f6edbd','#edbb8a','#de8a5a','#ca562c'];
+    let colors = ['brown','purple','orange','dark-green','yellow','red','lightblue', 'grey'];
+
+    // Commercial red, educational light orange, industrial purple, public purpose yellow,
+    // Public utilities light blue, Recreational dark green, residential brown transportation grey
+
     let zone= feature.properties ? feature.properties.zone : feature;
 
     if (zone == "" || !zone) { return '#ddd'}
