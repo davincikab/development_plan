@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block style %}
+    <link href="https://api.mapbox.com/mapbox-gl-js/v1.10.0/mapbox-gl.css" rel="stylesheet" />
+    <link rel="stylesheet" href="{% static 'css/map.css' %}">
+{% endblock %}
+{% block content %}
+<div class="map-container">
+    <div id="map"></div>
+</div>
+{% endblock %}
+{% block javascript %}
+    <script src="https://api.mapbox.com/mapbox-gl-js/v1.10.0/mapbox-gl.js"></script>
+    <script src="{% static 'js/map.js' %}"></script>
+{% endblock %}
