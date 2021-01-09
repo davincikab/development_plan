@@ -8,6 +8,7 @@ var map = L.map('map', {
 L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
     attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
     maxZoom: 18,
+    minZoom:10,
     id: 'mapbox/streets-v11',
     tileSize: 512,
     zoomOffset: -1,
@@ -42,9 +43,12 @@ var parcelsLayer = L.geoJSON(null, {
         }
     },
     onEachFeature:function(feature, layer) {
-        let popupstring = "<div class='py-2'><h3 class='my-2'></h3>"+
+        let name = feature.properties.name ? feature.properties.name : "Unnamed"
+        let popupstring = "<div class='py-2'><h3 class='my-2 text-center'> "+ feature.properties.name +"</h3>"+
          "<p class='d-flex space-between my-2 mx-2'> Use: <b class='uppercase'>"+ getZoneName(feature.properties.zone) +"</b></p>"+
-        "</div>";
+         "<p class='d-flex space-between my-2 mx-2'> Area: <b class='uppercase'>"+ feature.properties.area +" hectares</b></p>"+
+         "<p class='d-flex space-between my-2 mx-2'> Zone: <b class='uppercase'>"+ feature.properties.zone +"</b></p>"+
+         "</div>";
 
         layer.bindPopup(popupstring);
     }
@@ -59,7 +63,7 @@ function getZoneName(zone) {
 }
 
 function getColorByZone(feature) {
-    let colors = ['brown','purple','orange','dark-green','yellow','red','lightblue', 'grey'];
+    let colors = ['brown','purple','orange','#096b20','yellow','red','lightblue', 'grey'];
 
     // Commercial red, educational light orange, industrial purple, public purpose yellow,
     // Public utilities light blue, Recreational dark green, residential brown transportation grey
@@ -97,6 +101,7 @@ fetch('/data/')
     parcelsLayer.addData(JSON.parse(parcels));
 
 
+    map.setMaxBounds(boundaryLayer.getBounds());
 })
 .catch(error => {
     console.error(error);
@@ -113,7 +118,7 @@ legendControl.onAdd = function(map) {
     'Legend</button>';
 
    
-    let values = ['02', '12', '22','34', '54', '69', '71', ''];
+    let values = ['02', '12', '22','34', '45', '54', '69', '71', ''];
     let labels = ['residential','Industrial', 'Educational','Recreational', 'Public Purpose', 'Commercial', 'Public Utilities', 'Transportation'];
 
     let legendItems = "";
@@ -129,3 +134,38 @@ legendControl.onAdd = function(map) {
 }
 
 legendControl.addTo(map);
+
+// geolocation control
+var userLocationMarker = L.marker([0,0]);
+var geolocationControl = new L.Control({position:"topright"});
+
+geolocationControl.onAdd = function(map) {
+    let div = L.DomUtil.create("button", "btn btn-locate");
+
+    div.innerHTML = "<img src='/static/images/geolocate.svg' alt='geolocate'>";
+
+    div.addEventListener("click", function(e) {
+        map.locate();
+    });
+
+    return div;
+}
+
+map.addControl(geolocationControl);
+
+map.on("locationfound", function(e) {
+    // get the user location
+    console.log(e);
+
+    // flyto user location
+    map.flyTo(e.latlng, 16);
+
+    // add user location marker
+    userLocationMarker.setLatLng(e.latlng).addTo(map);
+});
+
+map.on("locationerr", function(e) {
+    console.log(e);
+});
+
+// search tab to various zone name or number
