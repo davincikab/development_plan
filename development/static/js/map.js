@@ -43,14 +43,17 @@ var parcelsLayer = L.geoJSON(null, {
         }
     },
     onEachFeature:function(feature, layer) {
-        let name = feature.properties.name ? feature.properties.name : "Unnamed"
-        let popupstring = "<div class='py-2'><h3 class='my-2 text-center'> "+ feature.properties.name +"</h3>"+
+        let name = feature.properties.name ? feature.properties.name : "Unnamed";
+        let popupstring = "<div class='py-2'><h3 class='my-2 text-center'> "+ name +"</h3>"+
          "<p class='d-flex space-between my-2 mx-2'> Use: <b class='uppercase'>"+ getZoneName(feature.properties.zone) +"</b></p>"+
          "<p class='d-flex space-between my-2 mx-2'> Area: <b class='uppercase'>"+ feature.properties.area +" hectares</b></p>"+
-         "<p class='d-flex space-between my-2 mx-2'> Zone: <b class='uppercase'>"+ feature.properties.zone +"</b></p>"+
+         "<p class='d-flex space-between my-2 mx-2'> Proposals: <b class='uppercase'>"+ feature.properties.proposals +"</b></p>"+
          "</div>";
 
         layer.bindPopup(popupstring);
+    },
+    filter:function(feature) {
+       return true;
     }
 }).addTo(map);
 
@@ -162,10 +165,46 @@ map.on("locationfound", function(e) {
 
     // add user location marker
     userLocationMarker.setLatLng(e.latlng).addTo(map);
+
+    // update waypoints
+    routerControl.setWayPoints([e.latLng])
 });
 
-map.on("locationerr", function(e) {
+map.on("locationerror", function(e) {
     console.log(e);
 });
 
 // search tab to various zone name or number
+
+// routing
+  // routing control
+var routerControl = L.Routing.control({
+    router: new L.Routing.GraphHopper('8d82257b-bdc9-4c29-b2c3-ea5b0a4780de', {
+        urlParameters: {
+            vehicle: 'foot',
+            locale: 'it'
+        }
+    }),
+    waypoints: [],
+    geocoder: L.Control.Geocoder.nominatim(),
+    createMarker: function(i, wp) {
+          var options = {
+        },
+          
+        marker = L.marker(wp.latLng, options);
+        return false;
+    },
+    routeLine:function(route, lineOptions) {
+        console.log(route);
+    },
+    lineOptions:{
+        styles:[
+            {color: '#666', opacity: 1, weight: 2}
+        ],
+        addWaypoints:false
+    }
+}).addTo(map);
+
+routerControl.on("routesfound", function(e) {
+    console.log(e);
+});
