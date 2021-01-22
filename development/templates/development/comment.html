@@ -1,0 +1,75 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load humanize %}
+
+{% block title %} Comment {% endblock %}
+
+{% block style %}
+    <link rel="stylesheet" href="{% static 'css/map.css' %}">
+    <style>
+        .comment-item {
+            padding:0.2em;
+            background-color: var(--light);
+            margin:0.5em;
+            font-size: 0.9em;
+            box-shadow: 2px 2px 0.1em #ccc;
+        }
+
+        .comment-item p {
+            margin:0.1em;
+        }
+
+        h6 {
+            font-weight: 600;   
+            margin:0.1em;
+            font-size: 1em;
+        }
+        .time {
+            font-style: italic;
+            font-size: 0.8em;
+            font-weight: normal;
+        }
+
+        .pagination {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+    </style>
+{% endblock %}
+{% block content %}
+<div class="container">
+    <form action="" class="form-horizontal" method="POST">
+        {% csrf_token %}
+
+        {{ form }}
+        <input type="submit" value="Add Comment" class="btn btn-primary mt-2">
+    </form>
+
+    <div class="comment-list">
+        {% for comment in comments %}
+            <div class="comment-item">
+                <h6>{{ comment.name }} on <span class="time">{{ comment.commented_on | naturaltime }}</span> </h6> 
+                <p>{{ comment.description }}</p>
+            </div>
+        {% endfor %}
+    </div>
+
+    <div class="pagination">
+        <span class="step-links">
+            {% if comments.has_previous %}
+                <a href="?page={{ comments.previous_page_number }}">previous</a>
+            {% endif %}
+            <span class="current">
+            Page {{ comments.number }} of {{ comments.paginator.num_pages }}.
+            </span>
+            {% if comments.has_next %}
+                <a href="?page={{ comments.next_page_number }}">next</a>
+            {% endif %}
+        </span>
+    </div>
+</div>
+{% endblock %}
+{% block javascript %}
+   <script src="{% static 'js/addFormControl.js' %}"></script>
+{% endblock %}

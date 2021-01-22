@@ -167,7 +167,7 @@ map.on("locationfound", function(e) {
     userLocationMarker.setLatLng(e.latlng).addTo(map);
 
     // update waypoints
-    routerControl.setWayPoints([e.latLng])
+    routerControl.setWaypoints([e.latlng, ])
 });
 
 map.on("locationerror", function(e) {
@@ -177,7 +177,7 @@ map.on("locationerror", function(e) {
 // search tab to various zone name or number
 
 // routing
-  // routing control
+// routing control
 var routerControl = L.Routing.control({
     router: new L.Routing.GraphHopper('8d82257b-bdc9-4c29-b2c3-ea5b0a4780de', {
         urlParameters: {
@@ -193,9 +193,6 @@ var routerControl = L.Routing.control({
           
         marker = L.marker(wp.latLng, options);
         return false;
-    },
-    routeLine:function(route, lineOptions) {
-        console.log(route);
     },
     lineOptions:{
         styles:[

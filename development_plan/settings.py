@@ -27,6 +27,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.humanize',
 
     # Local
     'development',
@@ -125,5 +126,5 @@ MEDIA_ROOT = os.path.join(BASE_DIR, "media/")
 LOGIN_REDIRECT_URL = 'home'
 LOGOUT_REDIRECT_URL = 'login'
 
-GDAL_LIBRARY_PATH = 'C:/OSGeo4W64/bin/gdal204'
-GEOS_LIBRARY_PATH = 'C:/Program Files/PostgreSQL/12/bin/libgeos_c'
+# GDAL_LIBRARY_PATH = 'C:/OSGeo4W64/bin/gdal204'
+# GEOS_LIBRARY_PATH = 'C:/Program Files/PostgreSQL/12/bin/libgeos_c'

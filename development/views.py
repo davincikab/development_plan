@@ -1,9 +1,12 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.http import JsonResponse
 from django.contrib.auth.decorators import login_required
 from django.core.serializers import serialize
+from django.core.paginator import Paginator
 
-from .models import Boundary, Parcels, Rivers, Roads
+
+from .models import Boundary, Parcels, Rivers, Roads, Comment
+from .forms import CommentForm
 
 # Create your views here.
 # @login_required
@@ -19,3 +22,21 @@ def data_view(request):
     }
 
     return JsonResponse(context)
+
+def comment_section(request):
+    comments = Comment.objects.all()
+    
+    paginator = Paginator(comments, 3)
+    page = request.GET.get('page')
+    comments = paginator.get_page(page)
+
+    if request.method == 'POST':
+        form = CommentForm(request.POST)
+
+        if form.is_valid():
+            form.save()
+
+            return redirect('/comment_section/')
+
+    form = CommentForm()
+    return render(request, "development/comment.html", {'form':form, 'comments':comments})

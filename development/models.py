@@ -40,3 +40,19 @@ class Roads(models.Model):
     class Meta:
         managed = False
         db_table = 'roads'
+
+class Comment(models.Model):
+    name = models.CharField("Name", max_length=50)
+    description = models.TextField("Description")
+    commented_on = models.DateTimeField("Comment On", auto_now=True)
+    
+    class Meta:
+        verbose_name = "Comment"
+        verbose_name_plural = "Comments"
+        ordering = ('-commented_on', )
+
+    def __str__(self):
+        return self.name
+
+    # def get_absolute_url(self):
+    #     return reverse("Comment_detail", kwargs={"pk": self.pk})
