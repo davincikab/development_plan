@@ -5,7 +5,7 @@ var map = L.map('map', {
     zoom: 14.4
 });
 
-L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
+let tileLayer = L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
     attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
     maxZoom: 18,
     minZoom:10,
@@ -92,16 +92,36 @@ var roadsLayer =  L.geoJSON(null, {
     }
 }).addTo(map);
 
+var powerLines =  L.geoJSON(null, {
+    style:function(feature) {
+        return {
+            color:'red',
+            weight:1
+        }
+    }
+}).addTo(map);
+
+var sewerLines=  L.geoJSON(null, {
+    style:function(feature) {
+        return {
+            color:'brown',
+            weight:1
+        }
+    }
+}).addTo(map);
+
 fetch('/data/')
 .then(res => res.json())
 .then(data => {
-    const { rivers, roads, boundary, parcels } = data;
+    const { rivers, roads, boundary, parcels, sewerlines, powerlines } = data;
 
     // add the data to map
     riversLayer.addData(JSON.parse(rivers));
     roadsLayer.addData(JSON.parse(roads));
     boundaryLayer.addData(JSON.parse(boundary));
     parcelsLayer.addData(JSON.parse(parcels));
+    powerLines.addData(JSON.parse(powerlines));
+    sewerLines.addData(JSON.parse(sewerlines));
 
 
     map.setMaxBounds(boundaryLayer.getBounds());
@@ -110,6 +130,19 @@ fetch('/data/')
     console.error(error);
 });
 
+var baseLayer = {
+    'Mapbox Street':tileLayer
+};
+
+var overlay = {
+    'Power Lines':powerLines,
+    'Sewer Lines':sewerLines,
+    'Parcels':parcelsLayer,
+    'River':riversLayer,
+    'Roads':roadsLayer
+};
+
+L.control.layers(baseLayer, overlay).addTo(map);
 
 // create a legend
 // Visual Legend
@@ -185,6 +218,7 @@ var routerControl = L.Routing.control({
             locale: 'it'
         }
     }),
+    collapsible:true,
     waypoints: [],
     geocoder: L.Control.Geocoder.nominatim(),
     createMarker: function(i, wp) {

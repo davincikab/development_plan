@@ -56,3 +56,17 @@ class Comment(models.Model):
 
     # def get_absolute_url(self):
     #     return reverse("Comment_detail", kwargs={"pk": self.pk})
+class Sewerlines(models.Model):
+    geom = models.MultiLineStringField(blank=True, null=True)
+
+    class Meta:
+        managed = False
+        db_table = 'sewerlines'
+
+
+class Powerlines(models.Model):
+    geom = models.MultiLineStringField(blank=True, null=True)
+
+    class Meta:
+        managed = False
+        db_table = 'powerlines'
