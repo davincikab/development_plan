@@ -104,7 +104,7 @@ var powerLines =  L.geoJSON(null, {
 var sewerLines=  L.geoJSON(null, {
     style:function(feature) {
         return {
-            color:'brown',
+            color:'green',
             weight:1
         }
     }
