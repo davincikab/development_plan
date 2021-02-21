@@ -34,17 +34,40 @@
             align-items: center;
             justify-content: center;
         }
+
+        .form-horizontal {
+            height: 0;
+            width: 0;
+            transition: width 0.3s;
+            overflow: hidden;
+        }
+
+        .form-horizontal.open  {
+            height: auto;
+            width: 100%;
+        }
+
+        .header-section {
+            justify-content: space-between;
+        }
     </style>
 {% endblock %}
 {% block content %}
 <div class="container">
-    <form action="" class="form-horizontal" method="POST">
+    
+    <form action="" class="form-horizontal" method="POST" id="form">
         {% csrf_token %}
 
         {{ form }}
         <input type="submit" value="Add Comment" class="btn btn-primary mt-2">
     </form>
 
+    <div class="header-section d-flex my-3">
+        <h5>What are Residence saying about the plan ?</h5>
+
+        <button class="btn btn-primary btn-sm" id="open-form">Open Form</button>
+    </div>
+    
     <div class="comment-list">
         {% for comment in comments %}
             <div class="comment-item">
@@ -71,4 +94,12 @@
 {% endblock %}
 {% block javascript %}
    <script src="{% static 'js/addFormControl.js' %}"></script>
+   <script>
+       let openFormButton = document.getElementById("open-form");
+       let formEl = document.getElementById("form")
+
+       openFormButton.addEventListener("click", function(e) {
+        form.classList.toggle("open")
+       });
+   </script>
 {% endblock %}

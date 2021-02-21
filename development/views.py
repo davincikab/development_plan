@@ -28,7 +28,7 @@ def data_view(request):
 def comment_section(request):
     comments = Comment.objects.all()
     
-    paginator = Paginator(comments, 3)
+    paginator = Paginator(comments, 30)
     page = request.GET.get('page')
     comments = paginator.get_page(page)
 
