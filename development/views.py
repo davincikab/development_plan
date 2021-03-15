@@ -5,7 +5,7 @@ from django.core.serializers import serialize
 from django.core.paginator import Paginator
 
 
-from .models import Boundary, Parcels, Rivers, Roads, Comment, Sewerlines, Powerlines
+from .models import Boundary, Parcels, Rivers, Roads, Comment, Sewerlines, Powerlines, PumpingStation, ManHole
 from .forms import CommentForm
 
 # Create your views here.
@@ -21,6 +21,8 @@ def data_view(request):
         'parcels':serialize('geojson', Parcels.objects.all()),
         'sewerlines':serialize('geojson', Sewerlines.objects.all()),
         'powerlines':serialize('geojson', Powerlines.objects.all()),
+        'manhole':serialize('geojson', ManHole.objects.all()),
+        'pumping_station':serialize('geojson', PumpingStation.objects.all()),
     }
 
     return JsonResponse(context)

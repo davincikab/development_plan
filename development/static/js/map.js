@@ -110,10 +110,28 @@ var sewerLines=  L.geoJSON(null, {
     }
 }).addTo(map);
 
+var manHole = L.geoJSON(null, {
+    style:function(feature) {
+        return {
+            color:'green',
+            weight:1
+        }
+    }
+}).addTo(map);
+
+var pumpingStation = L.geoJSON(null, {
+    style:function(feature) {
+        return {
+            color:'green',
+            weight:1
+        }
+    }
+}).addTo(map);
+
 fetch('/data/')
 .then(res => res.json())
 .then(data => {
-    const { rivers, roads, boundary, parcels, sewerlines, powerlines } = data;
+    const { rivers, roads, boundary, parcels, sewerlines, powerlines, manhole, pumping_station } = data;
 
     // add the data to map
     riversLayer.addData(JSON.parse(rivers));
@@ -122,6 +140,8 @@ fetch('/data/')
     parcelsLayer.addData(JSON.parse(parcels));
     powerLines.addData(JSON.parse(powerlines));
     sewerLines.addData(JSON.parse(sewerlines));
+    manHole.addData(JSON.parse(manhole));
+    pumpingStation.addData(JSON.parse(pumping_station));
 
 
     map.setMaxBounds(boundaryLayer.getBounds());
@@ -139,7 +159,9 @@ var overlay = {
     'Sewer Lines':sewerLines,
     'Parcels':parcelsLayer,
     'River':riversLayer,
-    'Roads':roadsLayer
+    'Roads':roadsLayer,
+    'Pumping Station':pumpingStation,
+    'Manhole':manHole
 };
 
 L.control.layers(baseLayer, overlay).addTo(map);
