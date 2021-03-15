@@ -70,3 +70,17 @@ class Powerlines(models.Model):
     class Meta:
         managed = False
         db_table = 'powerlines'
+
+class ManHole(models.Model):
+    geom = models.PointField(blank=True, null=True)
+
+    class Meta:
+        managed = False
+        db_table = 'man_hole'
+
+class PumpingStation(models.Model):
+    geom = models.PointField(blank=True, null=True)
+
+    class Meta:
+        managed = False
+        db_table = 'pumping_station'
